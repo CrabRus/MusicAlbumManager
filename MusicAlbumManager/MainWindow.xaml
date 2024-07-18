@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicAlbumManager"
         mc:Ignorable="d"
-        Title="Music Albums" Height="450" Width="400" ResizeMode="NoResize">
+        Title="Music Albums" Height="450" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
         <TabControl x:Name="topTabs">
             <TabItem Header="Tracks" 
@@ -30,10 +30,16 @@
                              FontSize="14"
                              Height="200"
                              SelectionMode="Single"/>
-                    <StackPanel Margin="10">
-                        <Button Content="Remove"
+                    <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Center"
+                                Margin="10">
+                        <Button Content="Remove"
                                 Click="RemoveTrack_Click"/>
+                        <Button x:Name="SelectButton"
+                                Content="Select"
+                                Click="SelectTrack_Click"
+                                Margin="20,0,0,0"
+                                Visibility="Hidden"/>
                     </StackPanel>
                 </StackPanel>
             </TabItem>
@@ -44,7 +50,7 @@
                     <TextBlock Text="Title"
                                FontSize="15"
                                FontWeight="DemiBold"/>
-                    <TextBox x:Name="albumName"
+                    <TextBox x:Name="albumTitle"
                              Margin="0,0,0,5"/>
                     <TextBlock Text="Author"
                                FontSize="15"
@@ -67,6 +73,45 @@
                         <Button Content="Edit" 
                                 Margin="20,0,0,0"
                                 Click="EditAlbum_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="EditAlbum"
+                     Header="" 
+                     FontWeight="Bold" 
+                     FontSize="16"
+                     Visibility="Hidden">
+                <StackPanel>
+                    <TextBlock Text="Title"
+                               FontSize="15"
+                               FontWeight="DemiBold"/>
+                    <TextBox x:Name="editAlbumTitle"
+                             Margin="0,0,0,5"/>
+                    <TextBlock Text="Author"
+                               FontSize="15"
+                               FontWeight="DemiBold"/>
+                    <TextBox x:Name="EditAlbumAuthor"
+                             Margin="0,0,0,5"/>
+                    <ListBox x:Name="EditAlbumList"
+                             Margin="0,5" 
+                             FontWeight="Normal" 
+                             FontSize="14"
+                             Height="200"
+                             SelectionMode="Single"/>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="10">
+                        <Button Content="Add"
+                                Click="AddAlbumsTrack_Click"/>
+                        <Button Content="Remove"
+                                Click="RemoveAlbumsTrack_Click"
+                                Margin="20,0,0,0"/>
+                        <Button Content="Save" 
+                                Margin="20,0,0,0"
+                                Click="SaveAlbum_Click"/>
+                        <Button Content="Exit"
+                                Margin="20,0,0,0"
+                                Click="ExitAlbum_Click"/>
                     </StackPanel>
                 </StackPanel>
             </TabItem>

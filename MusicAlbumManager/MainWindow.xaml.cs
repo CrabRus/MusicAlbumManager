@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics.Contracts;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -22,16 +23,32 @@ namespace MusicAlbumManager
         }
         private void AddTrack_Click(object sender, RoutedEventArgs e)
         {
-            controller.AddTrack(trackName.Text, trackAuthor.Text);
-            trackName.Clear();
-            trackAuthor.Clear();
+            if (trackName.Text == "" || trackAuthor.Text == "")
+            {
+                MessageBox.Show("Please check the text fields");
+            }
+            else
+            {
+                controller.AddTrack(trackName.Text, trackAuthor.Text);
+                trackName.Clear();
+                trackAuthor.Clear();
+            }
+            
         }
 
         private void AddAlbum_Click(object sender, RoutedEventArgs e)
         {
-            controller.AddAlbum(albumName.Text, albumAuthor.Text);
-            albumName.Clear();
-            albumAuthor.Clear();
+            if (albumTitle.Text == "" || albumAuthor.Text == "")
+            {
+                MessageBox.Show("Please check the text fields");
+            }
+            else
+            {
+                controller.AddAlbum(albumTitle.Text, albumAuthor.Text);
+                albumTitle.Clear();
+                albumAuthor.Clear();
+            }
+
         }
 
         private void RemoveTrack_Click(object sender, RoutedEventArgs e)
@@ -51,14 +68,35 @@ namespace MusicAlbumManager
 
         private void SaveAlbum_Click(Object sender, RoutedEventArgs e)
         {
-            var tabItem = topTabs.FindName("openedAlbum") as TabItem;
-            var newTitleTextBox = tabItem.FindName("newTitle") as TextBox;
-            var newAuthorTextBox = tabItem.FindName("newAuthor") as TextBox;
+            if (editAlbumTitle.Text == "" || EditAlbumAuthor.Text == "")
+            {
+                MessageBox.Show("Please check the text fields");
+            }
+            else
+            {
+                controller.SaveAlbum(editAlbumTitle.Text, EditAlbumAuthor.Text);
+            }
+                
+        }
 
-            string newTitle = newTitleTextBox.Text;
-            string newAuthor = newAuthorTextBox.Text;
+        private void ExitAlbum_Click(Object sender, RoutedEventArgs e)
+        {
+            controller.ExitAlbum();
+        }
 
-            controller.SaveAlbum(newTitle, newAuthor, controller.TempAlbumTracksList);
+        private void AddAlbumsTrack_Click(object sender, RoutedEventArgs e)
+        {
+            controller.AddTrackToAlbum();
+        }
+
+        private void RemoveAlbumsTrack_Click(object sender, RoutedEventArgs e)
+        {
+            controller.RemoveTrackInAlbum();
+        }
+
+        private void SelectTrack_Click(Object sender, RoutedEventArgs e)
+        {
+            controller.SelectTrack();
         }
     }
 }

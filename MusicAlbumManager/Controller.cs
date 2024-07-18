@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 
 namespace MusicAlbumManager
 {
@@ -16,6 +17,7 @@ namespace MusicAlbumManager
         public Album SelectedAlbum;
         public List<Track> TempAlbumTracksList;
         public bool AlbumIsOpened = false;
+        public Track tempSelectedTrack;
 
         public Controller(Model model, MainWindow view)
         {
@@ -91,94 +93,85 @@ namespace MusicAlbumManager
             }
         }
 
+
         public void EditAlbum()
-        {
-            SelectedAlbum = Model.GetAlbums()[View.albumList.SelectedIndex];
-            TempAlbumTracksList = SelectedAlbum.GetTracksFromAlbum();
-            AlbumIsOpened = true;
-            var listbox = new ListBox
+        { 
+            if (View.albumList.SelectedItems.Count == 0)
             {
-                Height = 200
-            };
-            foreach (var track in SelectedAlbum.GetTracksFromAlbum())
-            {
-                listbox.Items.Add($"{track.Name} - {track.Author}");
+                MessageBox.Show("Select album to edit");
             }
-            View.topTabs.Items.Add(new TabItem
+            else
             {
-                Name = "openedAlbumTab",
-                Header = SelectedAlbum.Title,
-                FontWeight = FontWeights.Bold,
-                FontSize = 16,
-                Content = new StackPanel
+                SelectedAlbum = Model.GetAlbums()[View.albumList.SelectedIndex];
+                TempAlbumTracksList = SelectedAlbum.GetTracks();
+                AlbumIsOpened = true;
+                View.EditAlbum.Visibility = Visibility.Visible;
+                View.EditAlbum.Header = SelectedAlbum.Title;
+                View.editAlbumTitle.Text = SelectedAlbum.Title;
+                View.EditAlbumAuthor.Text = SelectedAlbum.Author;
+                foreach (var track in SelectedAlbum.GetTracks())
                 {
-                    Children =
-                    {
-                        new TextBlock
-                        {
-                            Text = "Title",
-                            FontSize = 15,
-                            FontWeight = FontWeights.DemiBold
-                        },
-                        new TextBox
-                        {
-                            Name = "newTitle",
-                            Text = SelectedAlbum.Title,
-                            Margin = new Thickness(0,0,0,5)
-                        },
-                        new TextBlock
-                        {
-                            Text = "Author",
-                            FontSize = 15,
-                            FontWeight = FontWeights.DemiBold
-                        },
-                        new TextBox
-                        {
-                            Name="newAuthor",
-                            Text = SelectedAlbum.Author,
-                            Margin = new Thickness(0,0,0,5)
-                        },
-                        listbox,
-                        new StackPanel
-                        {
-                            Orientation = Orientation.Horizontal,
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            Margin = new Thickness(10),
-                            Children =
-                            {
-                                new Button
-                                {
-                                    Name = "SaveButton",
-                                    Content = "Save",
-                                    Click = "" 
-                                },
-                                new Button
-                                {
-                                    Name = "ExitButton",
-                                    Content = "Exit",
-                                    Margin = new Thickness(20,0,0,0)
-                                }
-                            }
-                        }
-                    }
+                    View.EditAlbumList.Items.Add($"{track.Name} - {track.Author}");
                 }
-
-            });
-
+                View.topTabs.SelectedItem = View.topTabs.Items[2];
+            }
         }
 
-        public void SaveAlbum(string newTitle, string newAuthor, List<Track> newAlbumTracks)
+        public void SaveAlbum(string newTitle, string newAuthor)
         {
             SelectedAlbum.SetTitle(newTitle);
             SelectedAlbum.SetAuthor(newAuthor);
-            SelectedAlbum.SetAlbumTracks(newAlbumTracks);
+            SelectedAlbum.SetAlbumTracks(TempAlbumTracksList);
 
+            ExitAlbum();
+        }
+
+        public void ExitAlbum()
+        {
+            View.editAlbumTitle.Clear();
+            View.EditAlbumAuthor.Clear();
             SelectedAlbum = null;
-            TempAlbumTracksList = null;
+            TempAlbumTracksList.Clear();
             AlbumIsOpened = false;
+            View.EditAlbum.Visibility = Visibility.Hidden;
+            View.topTabs.SelectedItem = View.topTabs.Items[1];
+            LoadLists();
+        }
 
-            View.topTabs.Items.Remove(View.topTabs.FindName("openedAlbumTab") as TabItem);
-            
+        public void AddTrackToAlbum()
+        {
+            View.topTabs.SelectedItem = View.topTabs.Items[0];
+            View.SelectButton.Visibility = Visibility.Visible;
+        }
+
+        public void SelectTrack()
+        {
+            if (View.trackList.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Select track");
+            }
+            else
+            {
+                tempSelectedTrack = Model.GetTracks()[View.trackList.SelectedIndex];
+                TempAlbumTracksList.Add(tempSelectedTrack);
+                View.EditAlbumList.Items.Add($"{tempSelectedTrack.Name} - {tempSelectedTrack.Author}");
+                View.topTabs.SelectedItem = View.topTabs.Items[2];
+                View.SelectButton.Visibility = Visibility.Hidden;
+            }
+
+        }
+
+        public void RemoveTrackInAlbum()
+        {
+            if (View.EditAlbumList.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Select track");
+            }
+            else
+            {
+                TempAlbumTracksList.Remove(Model.GetTracks()[View.EditAlbumList.SelectedIndex]);
+                View.EditAlbumList.Items.Remove(View.EditAlbumList.SelectedItem);
+            }
         }
         
     }

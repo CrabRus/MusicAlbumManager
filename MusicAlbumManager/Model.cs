@@ -12,7 +12,7 @@
         public string Date {  get; set; }
         private List<Track> albumTracks = new List<Track> { };
 
-        public List<Track> GetTracksFromAlbum()
+        public List<Track> GetTracks()
         {
             return albumTracks;
         }
